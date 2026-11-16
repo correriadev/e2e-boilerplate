@@ -4,7 +4,7 @@ on: [push, pull_request, workflow_dispatch]
 permissions:
   contents: read
 
-# Serialize runs on the same ref so an older report cannot replace a newer one.
+# Avoid concurrent runs publishing reports from the same ref.
 concurrency:
   group: api-e2e-${{ github.ref }}
   cancel-in-progress: false
