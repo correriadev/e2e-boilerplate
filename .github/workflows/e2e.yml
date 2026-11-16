@@ -1,9 +1,20 @@
 name: API E2E
 on: [push, pull_request, workflow_dispatch]
+
+permissions:
+  contents: read
+
+# Serialize runs on the same ref so an older report cannot replace a newer one.
+concurrency:
+  group: api-e2e-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   e2e:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    outputs:
+      pages-ready: ${{ steps.pages-artifact.outcome == 'success' }}
     env:
       SQLSERVER_SA_PASSWORD: ${{ secrets.E2E_SQLSERVER_SA_PASSWORD }}
       E2E_SYNTHETIC_SECRET: synthetic-ci-evidence-canary-719f28
@@ -36,7 +47,50 @@ jobs:
           path: artifacts/
           if-no-files-found: error
           retention-days: 7
+      - name: Select validated report for public Pages
+        id: report
+        if: ${{ !cancelled() && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
+        shell: pwsh
+        run: |
+          # A clean hosted runner must have exactly one completed execution.
+          $runs = @(Get-ChildItem artifacts -Filter execution.json -Recurse -ErrorAction SilentlyContinue)
+          if ($runs.Count -ne 1) {
+            Write-Host 'No unique completed test execution; keeping the previous Pages report.'
+            exit 0
+          }
+          $execution = Get-Content $runs[0].FullName -Raw | ConvertFrom-Json
+          $report = Join-Path $runs[0].Directory.FullName 'report'
+          # Test failure is allowed, but generation/evidence/secret validation is not.
+          if ($execution.generatorExit -eq 0 -and $execution.validationExit -eq 0 -and
+              $execution.resultCount -gt 0 -and (Test-Path (Join-Path $report 'index.html'))) {
+            "path=$report" >> $env:GITHUB_OUTPUT
+            "ready=true" >> $env:GITHUB_OUTPUT
+          } else {
+            Write-Host 'Report absent or failed validation; keeping the previous Pages report.'
+          }
+      - name: Upload only the validated HTML report for Pages
+        id: pages-artifact
+        if: ${{ !cancelled() && steps.report.outputs.ready == 'true' }}
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ${{ steps.report.outputs.path }}
       - name: Stop only this Compose stack
         if: always()
         shell: pwsh
         run: ./scripts/stack.ps1 Down
+
+  deploy-pages:
+    needs: e2e
+    if: ${{ !cancelled() && needs.e2e.outputs.pages-ready == 'true' && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy Allure report
+        id: deployment
+        uses: actions/deploy-pages@v4

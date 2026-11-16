@@ -198,7 +198,7 @@ Para uma jornada com observação SQL/Redis, siga `ReferenceJourneyTests.Isolate
 
 O checkout original não tinha pipeline. `.github/workflows/e2e.yml` usa Ubuntu, Node 24 e PowerShell 7, com os mesmos scripts. A senha pode vir do secret `E2E_SQLSERVER_SA_PASSWORD`; sem ele, o job gera uma senha efêmera mascarada. Em Bash, o equivalente de configuração é `export E2E_BASEURL='http://localhost:5080'`; a esteira entregue usa `$env:NOME = 'valor'` em `pwsh`, como nos exemplos acima.
 
-O upload usa `if: always()`, `if-no-files-found: error` e nome com run/attempt, preservando a falha do runner e sinalizando falha de publicação como etapa própria. A parada da stack também roda com `always()`. Este checkout não possui remote Git; a publicação hospedada não pôde ser exercitada. O caminho de geração após falha foi validado localmente com o diagnóstico.
+O upload usa `if: always()`, `if-no-files-found: error` e nome com run/attempt, preservando a falha do runner e sinalizando falha de publicação como etapa própria. A parada da stack também roda com `always()`. O caminho de geração após falha foi validado localmente com o diagnóstico.
 
 | Componente | Versão validada |
 |---|---|
@@ -214,3 +214,18 @@ O upload usa `if: always()`, `if-no-files-found: error` e nome com run/attempt, 
 | Docker / Compose | Engine 29.9.2 / Compose 5.7.0 |
 
 Os locks NuGet e npm são versionados; Docker restaura com `--locked-mode`. A instalação npm reportou seis avisos moderados em dependências de desenvolvimento do gerador; não foi aplicado upgrade incompatível automático. Os avisos iniciais de `System.Security.Cryptography.Pkcs` foram resolvidos pela atualização do SqlClient antes da validação final.
+
+
+### Relatório Allure no GitHub Pages
+
+O workflow também publica o relatório em https://correriadev.github.io/e2e-boilerplate/.
+Na configuração inicial do repositório, selecione **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+Execute **Actions → API E2E → Run workflow**, na branch `main`, ou faça um push nessa branch.
+
+- Somente execuções `push`/manuais de `main` publicam. Pull requests e outras branches mantêm apenas o artefato de diagnóstico.
+- O site contém somente `report/`, não os logs, TRX, configuração do adaptador ou resultados brutos da pasta `artifacts/`.
+- A publicação exige geração e validação das evidências bem-sucedidas, incluindo a checagem de ausência dos segredos conhecidos. Uma falha de teste não impede publicar um relatório válido e continua deixando a execução vermelha.
+- Se não houver relatório validado, o último site publicado permanece disponível; confira a execução no Actions para não confundi-lo com um resultado novo.
+- O artefato `api-e2e-<run>-<attempt>` continua disponível por sete dias. O site mostra o último relatório publicado, sem histórico entre execuções.
+
+**O GitHub Pages deste repositório público é público.** Este workflow executa o sample com dados sintéticos. Não aponte a suíte para ambientes reais nem adicione dados pessoais, tokens ou corpos brutos às evidências sem revisar a sanitização e a política de publicação.
