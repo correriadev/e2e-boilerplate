@@ -1,0 +1,5 @@
+{
+  "Guid": "da1dd227-0000-4000-8000-000000000001",
+  "Request": { "Path": { "Matchers": [{ "Name": "ExactMatcher", "Pattern": "/catalog/products/SKU-E2E" }] }, "Methods": ["GET"] },
+  "Response": { "StatusCode": 200, "Headers": { "Content-Type": "application/json" }, "BodyAsJson": { "sku": "SKU-E2E", "price": 42.50, "currency": "BRL" } }
+}

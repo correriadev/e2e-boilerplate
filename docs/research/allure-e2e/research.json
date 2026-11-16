@@ -1,0 +1,98 @@
+{
+  "topic_id": "allure-e2e-api-evidencias",
+  "topic": "Como relatórios Allure são estruturados para testes E2E de API na versão Allure 3, quais evidências anexar por cenário e como apresentá-las.",
+  "updated_at": "2026-11-13",
+  "status": "completed",
+  "macros": [
+    {
+      "id": "M1",
+      "title": "Hierarquia e labels",
+      "question": "Como o Allure 3 organiza a árvore de resultados (suite, feature, story, epic) e quais labels de identificação, severidade e rastreabilidade são recomendados para E2E de API?",
+      "shard": "shards/M1.md",
+      "files_allowed": ["docs/research/allure-e2e-api-evidencias/shards/M1.md"],
+      "status": "completed",
+      "attempts": 0,
+      "error": null,
+      "micros": [
+        {"id": "M1.1", "question": "Como o Allure 3 monta a árvore a partir de parentSuite, suite, subSuite e de epic/feature/story?", "status": "answered"},
+        {"id": "M1.2", "question": "Qual semântica a documentação recomenda para epic, feature e story em testes E2E de API?", "status": "partial"},
+        {"id": "M1.3", "question": "Quais são owner, tags e severity, com valores aceitos e uso recomendado?", "status": "partial"},
+        {"id": "M1.4", "question": "Como IDs estáveis e vínculos com requisito são expressos (AllureId, AllureTms, AllureLink, AllureIssue)?", "status": "partial"},
+        {"id": "M1.5", "question": "Quais labels o adaptador .NET adiciona automaticamente (host, thread, package, language, framework) e como ocultá-las?", "status": "partial"},
+        {"id": "M1.6", "question": "Como garantir um único valor de severity quando há atributo na classe e no método?", "status": "blocked"}
+      ]
+    },
+    {
+      "id": "M2",
+      "title": "Configuração do Allure 3",
+      "question": "Como o Allure 3 é configurado (arquivo allurerc, plugins, categories, environments, history, flaky) e quais formatos legados de configuração continuam válidos?",
+      "shard": "shards/M2.md",
+      "files_allowed": ["docs/research/allure-e2e-api-evidencias/shards/M2.md"],
+      "status": "completed",
+      "attempts": 0,
+      "error": null,
+      "micros": [
+        {"id": "M2.1", "question": "Qual o nome do arquivo allurerc.* aceito, qual a precedência, e allureConfig.json é lido por algum leitor da v3?", "status": "partial"},
+        {"id": "M2.2", "question": "Quais opções existem em plugins.awesome.options (reportName, reportLanguage com valores aceitos, singleFile, groupBy)?", "status": "partial"},
+        {"id": "M2.3", "question": "Como funcionam categories: regras, matchers, groupBy e padrões?", "status": "answered"},
+        {"id": "M2.4", "question": "Como environments e variables registram metadados de execução?", "status": "answered"},
+        {"id": "M2.5", "question": "Como historyPath, historyLimit e flakyDetection são configurados?", "status": "answered"},
+        {"id": "M2.6", "question": "environment.properties e executor.json existem no Allure 3 e são lidos?", "status": "partial"}
+      ]
+    },
+    {
+      "id": "M3",
+      "title": "Evidências de E2E de API",
+      "question": "Quais media types, steps, parâmetros e descrições são recomendados para anexar evidências de chamadas HTTP por cenário, com sanitização e tratamento de falhas?",
+      "shard": "shards/M3.md",
+      "files_allowed": ["docs/research/allure-e2e-api-evidencias/shards/M3.md"],
+      "status": "completed",
+      "attempts": 0,
+      "error": null,
+      "micros": [
+        {"id": "M3.1", "question": "Quais media types de anexo são suportados (application/json, text/plain), como se usa AddAttachment e há limites de tamanho?", "status": "partial"},
+        {"id": "M3.2", "question": "Como steps para chamadas HTTP são modelados, com nomes Dado/Quando/Então e anexos aninhados?", "status": "partial"},
+        {"id": "M3.3", "question": "Quais são os ParameterMode Default, Masked e Hidden, e como tratar valores que mudam a cada execução?", "status": "partial"},
+        {"id": "M3.4", "question": "Qual o conjunto mínimo de evidências por cenário (requisição, resposta, estado antes e depois, chamadas a mocks, correlação) e como sanitizar?", "status": "partial"},
+        {"id": "M3.5", "question": "Como a descrição do teste é definida (AllureDescription, markdown) e como é exibida?", "status": "partial"},
+        {"id": "M3.6", "question": "Como mensagem, stack trace e failExceptions aparecem em falhas e quebras?", "status": "partial"}
+      ]
+    },
+    {
+      "id": "M4",
+      "title": "Categorias, flakiness e histórico",
+      "question": "Quais categorias padrão existem, como classificar falhas por message e trace, como funcionam flaky detection, retries, qualityGate, layout, charts e sections na v3?",
+      "shard": "shards/M4.md",
+      "files_allowed": ["docs/research/allure-e2e-api-evidencias/shards/M4.md"],
+      "status": "completed",
+      "attempts": 0,
+      "error": null,
+      "micros": [
+        {"id": "M4.1", "question": "Quais categorias padrão existem (Product errors, Test errors) e como modelar ambiente, dados e infraestrutura?", "status": "partial"},
+        {"id": "M4.2", "question": "Como a classificação por message e trace com regex é declarada?", "status": "answered"},
+        {"id": "M4.3", "question": "Quais são os critérios e a configuração de flaky detection?", "status": "answered"},
+        {"id": "M4.4", "question": "Como retries aparecem no relatório?", "status": "answered"},
+        {"id": "M4.5", "question": "qualityGate existe no Allure 3 e como se configura?", "status": "answered"},
+        {"id": "M4.6", "question": "Como layout, charts e sections funcionam na v3?", "status": "blocked"}
+      ]
+    },
+    {
+      "id": "M5",
+      "title": "Apresentação, privacidade e operação",
+      "question": "Há telemetria ou analytics externos no relatório e como desligá-los, como singleFile e metadados de CI/execução funcionam, qual adaptador .NET é compatível, quais idiomas existem e como limpar resultados antigos?",
+      "shard": "shards/M5.md",
+      "files_allowed": ["docs/research/allure-e2e-api-evidencias/shards/M5.md"],
+      "status": "completed",
+      "attempts": 0,
+      "error": null,
+      "micros": [
+        {"id": "M5.1", "question": "O relatório Allure 3 inclui analytics ou telemetria externa e há opção documentada para desligar?", "status": "partial"},
+        {"id": "M5.2", "question": "Como singleFile funciona e qual o uso para compartilhamento como evidência?", "status": "partial"},
+        {"id": "M5.3", "question": "Quais metadados de CI e execução são coletados automaticamente e quais são sensíveis?", "status": "partial"},
+        {"id": "M5.4", "question": "Qual versão do adaptador .NET (Allure.Xunit ou Allure.Net) é compatível com Allure 3?", "status": "partial"},
+        {"id": "M5.5", "question": "Quais idiomas são suportados, com foco em pt-BR?", "status": "partial"},
+        {"id": "M5.6", "question": "Como limpar resultados antigos e definir a pasta de saída?", "status": "partial"}
+      ]
+    }
+  ]
+}

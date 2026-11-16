@@ -1,0 +1,6 @@
+{
+  "name": "boilerplate-e2e",
+  "private": true,
+  "scripts": { "e2e": "pwsh -NoProfile -File scripts/e2e.ps1", "report": "allure generate --config allurerc.mjs" },
+  "devDependencies": { "allure": "3.33.0" }
+}
