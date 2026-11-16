@@ -1,0 +1,9 @@
+**/bin/
+**/obj/
+node_modules/
+artifacts/
+.env
+**/appsettings.local.json
+**/allure-results/
+**/allure-report/
+.vs/
